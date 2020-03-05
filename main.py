@@ -1,7 +1,7 @@
 import pygame
 import random
 import math
-
+import pandas as pd
 from openpyxl import Workbook
 
 from time import sleep
@@ -61,21 +61,11 @@ errorRate = 1
 # Game restart
 gameOver = False
 
-# Data sending
-wb = Workbook()
-# grab the active worksheet
-ws = wb.active
-ws['A1'] = "Time"
-ws['B1'] = "PlayerPos"
-ws['C1'] = "ObstacleXPos"
-ws['D1'] = "CoinXPos"
-ws['E1'] = 'Score'
-
-ws.append([1,playerX,obstacleX, coinX, scoreValue])
-
-wb.save('MLDrivingData.csv')
+# Testing Data
+#df = pd.read_csv('MLDrivingData.csv')
 
 
+##################################################################################################
 # Renders text(score) to screen at x , y
 def showScore(x, y):
     score = font.render("Score: " + str(scoreValue), True, (0, 0, 0))
@@ -153,7 +143,7 @@ while running:
                 playerXSpeed = 0
 
     # some form of ai thing
-
+    '''
     if (obstacleY > 400) and (obstacleX <= playerX <= obstacleX + errorSize):
         playerXSpeed = rightSpeed
     elif coinX <= playerX:
@@ -162,7 +152,7 @@ while running:
         playerXSpeed = leftSpeed
     elif coinX >= playerX:
         playerXSpeed = rightSpeed
-
+    '''
 
 
     '''
@@ -210,7 +200,7 @@ while running:
 
         # Decrease error size
         errorSize = errorSize - errorRate
-        print(errorSize)
+
 
    # if scoreValue == 10:
        # print("10 score met spawn new obstacle")
@@ -230,9 +220,7 @@ while running:
     coinCollision = isCollision(coinX, coinY, playerX, playerY)
     if coinCollision:
 
-       # add to excel
-        ws.append([1, playerX, obstacleX, coinX, scoreValue])
-        wb.save('MLDrivingData.csv')
+
 
 
         coinY = -50
