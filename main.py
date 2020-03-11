@@ -97,7 +97,7 @@ print('doing training ...')
 model.fit(X_train, y_train)
 print('done training ...')
 
-# Save trained model to pfl file
+# Save trained model to pkl file
 joblib.dump(model,'testTrainData.pkl')
 
 # Find error rate
@@ -182,40 +182,6 @@ while running:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 playerXSpeed = 0
 
-    # some form of ai thing
-    '''
-    if (obstacleY > 400) and (obstacleX <= playerX <= obstacleX + errorSize):
-        playerXSpeed = rightSpeed
-    elif coinX <= playerX:
-        playerXSpeed = leftSpeed
-    if (obstacleY > 400) and obstacleX >= playerX >= obstacleX - errorSize:
-        playerXSpeed = leftSpeed
-    elif coinX >= playerX:
-        playerXSpeed = rightSpeed
-    '''
-
-
-    '''
-    if coinX <= playerX:
-        playerXSpeed = leftSpeed
-    elif coinX == playerX:
-        playerXSpeed = 0.0
-
-    if coinX >= playerX:
-        playerXSpeed = rightSpeed
-    elif coinX == playerX:
-        playerXSpeed = 0.0
-        
-    if (obstacleY > 400) and (obstacleX <= playerX <= obstacleX + 32):
-        playerXSpeed = rightSpeed
-    elif playerX >= obstacleX + 40:
-        playerXSpeed = 0.0
-    if (obstacleY > 400) and obstacleX >= playerX >= obstacleX - 32:
-        playerXSpeed = leftSpeed
-    elif playerX <= obstacleX - 40:
-        playerXSpeed = 0.0
-        
-    '''
     # Update player left/right speed
     playerX += playerXSpeed
 
