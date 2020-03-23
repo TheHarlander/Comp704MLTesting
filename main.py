@@ -2,14 +2,15 @@ import pygame
 import random
 import math
 
+import pickle
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn import ensemble
 from sklearn.metrics import mean_absolute_error
-from sklearn.externals import joblib
+
 from sklearn import linear_model
 from openpyxl import Workbook
-
+import joblib
 from time import sleep
 
 
@@ -69,40 +70,14 @@ gameOver = False
 
 #################################################################################################
 
-# Testing Data
+# Testing data
 
-df = pd.read_csv("MLDrivingData.csv")
+infile = open("LRtestTrainData.pkl", 'rb')
+pickleModel = pickle.load(infile)
+infile.close()
 
-items_df = pd.get_dummies(df, columns=['ObstacleXPos', 'CoinXPos'])
 
-# Create the X and Y arrays
-X = items_df.values
-y = df['PlayerPos'].values
 
-# Split the data set in a trining set (70%) and test set (30%)
-X_train, X_test, y_train, y_test = train_test_split(X,y, test_size= 0.3, random_state= 0)
-
-# Fit regression model
-model = ensemble.GradientBoostingRegressor(
-    n_estimators=1000,
-    learning_rate=0.1,
-    max_depth=6,
-    min_samples_leaf=9,
-    max_features=0.1,
-    loss='huber',
-    random_state=0
-)
-
-print('doing training ...')
-model.fit(X_train, y_train)
-print('done training ...')
-
-# Save trained model to pkl file
-joblib.dump(model,'testTrainData.pkl')
-
-# Find error rate
-mse = mean_absolute_error(y_train, model.predict(X_train))
-print("Training set mean absolute error: %.4f" % mse)
 
 
 ##################################################################################################
@@ -141,11 +116,32 @@ def isCollision(obstacleX, obstacleY, playerX, playerY):
     else:
         return False
 
+def mLPredictiction(X):
+    X = [[coinX]]
+    ynew = pickleModel.predict(X)
+
+    if playerX > ynew:
+        playerXSpeed = leftSpeed
+
+    elif playerX < ynew:
+        playerXSpeed = rightSpeed
+
 
 # Game Loop
 running = True
 while running:
+##############################################################################
+    X = [[coinX]]
+    ynew = pickleModel.predict(X)
 
+    if playerX > ynew:
+        playerXSpeed = leftSpeed
+
+    elif playerX < ynew:
+        playerXSpeed = rightSpeed
+
+
+###################################################################################################################
     # Draw background, grass , barriers and road markings
     screen.fill((75, 75, 75))
     pygame.draw.rect(screen, (100, 140, 100), [0, 0, 150, 850])
@@ -154,6 +150,8 @@ while running:
     pygame.draw.rect(screen, (30, 30, 30), [650, 0, 10, 850])
     pygame.draw.rect(screen, (200, 200, 200), [roadMarking1X, roadMarking1Y, 20, 100])
     pygame.draw.rect(screen, (200, 200, 200), [roadMarking2X, roadMarking2Y, 20, 100])
+
+   # mLPredictiction(coinX)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -263,7 +261,7 @@ while running:
 
     # Update image locations
     player(playerX, playerY)
-    obstacle(obstacleX, obstacleY)
-    coin(coinX, coinY)
-    showScore(textX, textY)
+    obstacle(round(obstacleX), round(obstacleY))
+    coin(round(coinX), round(coinY))
+    showScore(round(textX), round(textY))
     pygame.display.update()
