@@ -70,9 +70,12 @@ gameOver = False
 
 #################################################################################################
 
-# Testing data
+# Testing data #
+# Linear Regression = LRtestTrainData.pkl
+# MulitLinear Regression = MLRtestTrainData.pkl
+# GBRegression = GBRtestTrainData.pkl
 
-infile = open("LRtestTrainData.pkl", 'rb')
+infile = open("MLRtestTrainData.pkl", 'rb')
 pickleModel = pickle.load(infile)
 infile.close()
 
@@ -130,18 +133,7 @@ def mLPredictiction(X):
 # Game Loop
 running = True
 while running:
-##############################################################################
-    X = [[coinX]]
-    ynew = pickleModel.predict(X)
 
-    if playerX > ynew:
-        playerXSpeed = leftSpeed
-
-    elif playerX < ynew:
-        playerXSpeed = rightSpeed
-
-
-###################################################################################################################
     # Draw background, grass , barriers and road markings
     screen.fill((75, 75, 75))
     pygame.draw.rect(screen, (100, 140, 100), [0, 0, 150, 850])
@@ -151,8 +143,17 @@ while running:
     pygame.draw.rect(screen, (200, 200, 200), [roadMarking1X, roadMarking1Y, 20, 100])
     pygame.draw.rect(screen, (200, 200, 200), [roadMarking2X, roadMarking2Y, 20, 100])
 
-   # mLPredictiction(coinX)
+    ##############################################################################
+    X = [[obstacleX, obstacleY, coinX, coinY]]
+    ynew = pickleModel.predict(X)
 
+    if playerX > ynew:
+        playerXSpeed = leftSpeed
+
+    elif playerX < ynew:
+        playerXSpeed = rightSpeed
+
+    ###################################################################################################################
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
